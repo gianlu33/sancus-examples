@@ -18,10 +18,9 @@ DECLARE_SM(foo, 0x1234);
 
 SM_INPUT(foo, whatever, data, len) {}
 
-void SM_ENTRY(foo) foo_enter(uint8_t *challenge, uint16_t len, uint8_t *res) {
+int SM_ENTRY(foo) foo_enter(uint8_t *challenge, uint16_t len, uint8_t *res) {
     pr_info("Hello from Foo");
-    sancus_tag(challenge, len, res);
-    pr_info("Computed tag");
+    return sancus_tag(challenge, len, res);
 }
 
 int main() {
@@ -40,7 +39,7 @@ int main() {
 
     // this hangs when executing handle_attest, but succeeds with foo_enter
     ASSERT( sm_call_id(id, ENTRY_ID, args, 3, &retval) );
-    ASSERT(!retval);
+    ASSERT(retval);
 
     pr_info("All done!\n");
     EXIT();
